@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Empleados | Modern UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables de diseño */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Encabezado */
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Layout de tarjetas */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 1.8rem;
+            transition: var(--transition);
+            border: none;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-right: auto;
+        }
+
+        .card-header i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-right: 12px;
+        }
+
+        /* Formularios */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            background-color: #f8fafc;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            gap: 8px;
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d0006e);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00b4d8);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e85d04);
+            color: white;
+        }
+
+        /* Tabla */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 10px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 500;
+            padding: 1rem 1.2rem;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        .table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .table tbody tr {
+            background-color: white;
+            transition: var(--transition);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f0f4f8;
+            transform: translateX(5px);
+        }
+
+        .table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: rgba(76, 201, 240, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background-color: rgba(248, 150, 30, 0.2);
+            color: var(--warning);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .action-btn.edit {
+            background-color: var(--primary);
+        }
+
+        .action-btn.delete {
+            background-color: var(--danger);
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        /* Mensajes de estado */
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-error {
+            background-color: rgba(247, 37, 133, 0.15);
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-success {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert i {
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gestor de Empleados</h1>
+            <p>Administra tu equipo de trabajo de forma eficiente con esta herramienta moderna</p>
+        </header>
+
+        <div id="alert-container"></div>
+
+        <div class="dashboard">
+            <!-- Formulario para crear/editar -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user-edit"></i>
+                    <h2 id="form-title">Agregar Nuevo Empleado</h2>
+                </div>
+                <form id="empleado-form">
+                    <input type="hidden" id="empleado-id">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" class="form-control" placeholder="Ej: María García" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="puesto">Puesto</label>
+                        <input type="text" id="puesto" class="form-control" placeholder="Ej: Desarrollador Frontend" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salario">Salario ($)</label>
+                        <input type="number" id="salario" class="form-control" step="0.01" placeholder="Ej: 3500.00" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="btn-submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                        <button type="button" id="btn-cancel" class="btn btn-outline" style="display:none;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sección para inserción masiva -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-users"></i>
+                    <h2>Importación Masiva</h2>
+                </div>
+                <div class="form-group">
+                    <label for="empleados-masivos">Datos de empleados (JSON)</label>
+                    <textarea id="empleados-masivos" class="form-control" placeholder='[{"nombre":"Juan Pérez","puesto":"Desarrollador","salario":3000},...]'></textarea>
+                </div>
+                <button id="btn-masivo" class="btn btn-success">
+                    <i class="fas fa-file-import"></i> Importar Empleados
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla de empleados -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-list"></i>
+                <h2>Lista de Empleados</h2>
+                <button id="btn-refresh" class="btn btn-outline">
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table id="empleados-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Puesto</th>
+                            <th>Salario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos DOM
+            const empleadoForm = document.getElementById('empleado-form');
+            const btnCancel = document.getElementById('btn-cancel');
+            const btnMasivo = document.getElementById('btn-masivo');
+            const btnRefresh = document.getElementById('btn-refresh');
+            const empleadosTable = document.querySelector('#empleados-table tbody');
+            const formTitle = document.getElementById('form-title');
+            const alertContainer = document.getElementById('alert-container');
+            
+            // Estado
+            let isEditing = false;
+            let currentEditId = null;
+
+            // Inicializar
+            fetchEmpleados();
+            initEventListeners();
+
+            function initEventListeners() {
+                empleadoForm.addEventListener('submit', handleSubmit);
+                btnCancel.addEventListener('click', cancelEdit);
+                btnMasivo.addEventListener('click', handleMasivo);
+                btnRefresh.addEventListener('click', fetchEmpleados);
+            }
+
+            // Mostrar alerta
+            function showAlert(message, type = 'success') {
+                const alertEl = document.createElement('div');
+                alertEl.className = `alert alert-${type}`;
+                alertEl.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <div>${message}</div>
+                `;
+                
+                alertContainer.appendChild(alertEl);
+                
+                // Auto-remover después de 5 segundos
+                setTimeout(() => {
+                    alertEl.style.opacity = '0';
+                    setTimeout(() => alertEl.remove(), 300);
+                }, 5000);
+            }
+
+            // Obtener empleados
+            async function fetchEmpleados() {
+                try {
+                    // Mostrar estado de carga
+                    empleadosTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando empleados...
+                            </td>
+                        </tr>
+                    `;
+                    
+                    const response = await fetch('http://192.168.20.24:8000/empleados');
+                    if (!response.ok) {
+                        throw new Error('Error al obtener empleados');
+                    }
+                    
+                    const empleados = await response.json();
+                    renderEmpleados(empleados);
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(error.message, 'error');
+                    
+                    empleadosTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--danger);">
+                                <i class="fas fa-exclamation-triangle"></i> ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // Renderizar tabla
+            function renderEmpleados(empleados) {
+                if (empleados.length === 0) {
+                    empleadosTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                No hay empleados registrados
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                empleadosTable.innerHTML = '';
+                
+                empleados.forEach(empleado => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${empleado.id}</td>
+                        <td>
+                            <div style="font-weight: 500;">${empleado.nombre}</div>
+                        </td>
+                        <td>${empleado.puesto}</td>
+                        <td>
+                            <div class="badge badge-success">$${empleado.salario.toFixed(2)}</div>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <button class="action-btn edit" data-id="${empleado.id}" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" data-id="${empleado.id}" title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    empleadosTable.appendChild(row);
+                });
+
+                // Agregar event listeners a los botones
+                document.querySelectorAll('.action-btn.edit').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        editEmpleado(id);
+                    });
+                });
+
+                document.querySelectorAll('.action-btn.delete').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        deleteEmpleado(id);
+                    });
+                });
+            }
+
+            // Manejar envío del formulario
+            async function handleSubmit(e) {
+                e.preventDefault();
+                
+                const empleado = {
+                    nombre: document.getElementById('nombre').value,
+                    puesto: document.getElementById('puesto').value,
+                    salario: parseFloat(document.getElementById('salario').value)
+                };
+
+                try {
+                    let response;
+                    if (isEditing) {
+                        response = await fetch(`http://192.168.20.24:8000/empleados/${currentEditId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(empleado)
+                        });
+                    } else {
+                        response = await fetch('http://192.168.20.24:8000/empleados', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(empleado)
+                        });
+                    }
+
+                    if (response.ok) {
+                        const message = isEditing ? 
+                            'Empleado actualizado correctamente' : 
+                            'Empleado agregado correctamente';
+                        
+                        showAlert(message);
+                        resetForm();
+                        fetchEmpleados();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Error en la operación');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(error.message, 'error');
+                }
+            }
+
+            // Editar empleado
+            async function editEmpleado(id) {
+                try {
+                    const response = await fetch(`http://192.168.20.24:8000/empleados/${id}`);
+                    if (!response.ok) {
+                        throw new Error('Empleado no encontrado');
+                    }
+                    
+                    const empleado = await response.json();
+                    
+                    document.getElementById('empleado-id').value = id;
+                    document.getElementById('nombre').value = empleado.nombre;
+                    document.getElementById('puesto').value = empleado.puesto;
+                    document.getElementById('salario').value = empleado.salario;
+                    
+                    isEditing = true;
+                    currentEditId = id;
+                    formTitle.textContent = 'Editar Empleado';
+                    btnCancel.style.display = 'inline-block';
+                    
+                    // Scroll al formulario
+                    document.querySelector('.form-container').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start'
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(error.message, 'error');
+                }
+            }
+
+            // Cancelar edición
+            function cancelEdit() {
+                resetForm();
+            }
+
+            // Resetear formulario
+            function resetForm() {
+                empleadoForm.reset();
+                document.getElementById('empleado-id').value = '';
+                isEditing = false;
+                currentEditId = null;
+                formTitle.textContent = 'Agregar Nuevo Empleado';
+                btnCancel.style.display = 'none';
+            }
+
+            // Eliminar empleado
+            async function deleteEmpleado(id) {
+                if (!confirm('¿Estás seguro de eliminar este empleado?')) return;
+                
+                try {
+                    const response = await fetch(`http://192.168.20.24:8000/empleados/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        showAlert('Empleado eliminado correctamente');
+                        fetchEmpleados();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Error al eliminar');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(error.message, 'error');
+                }
+            }
+
+            // Inserción masiva
+            async function handleMasivo() {
+                const data = document.getElementById('empleados-masivos').value;
+                if (!data) {
+                    showAlert('Por favor ingrese datos para inserción masiva', 'error');
+                    return;
+                }
+                
+                try {
+                    const empleados = JSON.parse(data);
+                    if (!Array.isArray(empleados)) {
+                        throw new Error('Formato inválido. Debe ser un array de empleados');
+                    }
+                    
+                    const response = await fetch('http://192.168.20.24:8000/empleados/masivo', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(empleados)
+                    });
+                    
+                    if (response.ok) {
+                        showAlert('Empleados importados correctamente');
+                        document.getElementById('empleados-masivos').value = '';
+                        fetchEmpleados();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Error en inserción masiva');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(`Error: ${error.message}`, 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
